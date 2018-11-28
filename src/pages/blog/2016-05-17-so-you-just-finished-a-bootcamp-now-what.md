@@ -2,7 +2,15 @@
 templateKey: blog-post
 title: So You Just Finished a Bootcamp, Now What?
 date: 2016-05-17 20:25 UTC
-tags: code, bootcamp, frontside, job, hiring, interview, oss, community
+tags: 
+	- code
+	- bootcamp
+	- frontside
+	- job
+	- hiring
+	- interview
+	- oss
+	- community
 image: /blog/2016/05/17/so-you-just-finished-a-bootcamp-now-what/techstars.jpg
 author: Stephanie Riera
 published: true
