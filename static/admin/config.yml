@@ -33,6 +33,9 @@ collections:
       - {label: "Twitter", name: "twitter", widget: "string"}
       - {label: "Github", name: "github", widget: "string"}
       - {label: "Bio", name: "bio", widget: "markdown"}
+      - label: "Featured Image"
+          name: "img"
+          widget: "image"
 
   - name: "pages"
     label: "Pages"
