@@ -64,6 +64,13 @@ module.exports = {
         modulePath: `${__dirname}/src/cms/cms.js`,
       },
     },
+    {
+      resolve: "gatsby-source-simplecast",
+      options: {
+        apiKey: process.env.SIMPLECAST_API,
+        podcastId: 96
+      },
+    },
     'gatsby-plugin-purgecss', // must be after other CSS plugins
     'gatsby-plugin-netlify', // make sure to keep it last in the array
   ],
