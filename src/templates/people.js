@@ -52,7 +52,7 @@ PeoplePage.propTypes = {
 export default PeoplePage
 
 export const peopleQuery = graphql`
-  query PeopleQuery($id: String!) {
+  query PersonQuery($id: String!) {
     markdownRemark(id: { eq: $id }) {
       html
       frontmatter {
