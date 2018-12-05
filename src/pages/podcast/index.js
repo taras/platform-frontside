@@ -23,7 +23,7 @@ const PodcastPage = ({
       <ul>
         {episodes.map(episode => (
           <li key={episode.id}>
-            <h3>{episode.title}</h3>
+            <h3><Link to={`/podcast/${episode.slug}`} >{episode.title}</Link></h3>
             <p>{episode.description}</p>
             <ul>
               {episode.authors.map(author => (
@@ -62,6 +62,7 @@ export const episodesQuery = graphql`
           season
           title
           description
+          slug
           authors {
             frontmatter {
               name

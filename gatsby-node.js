@@ -24,9 +24,9 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
         edges {
           node {
             id
-            title
             number
             season
+            slug
           }
         }
       }
@@ -85,11 +85,11 @@ exports.createPages = async ({ actions: { createPage }, graphql }) => {
 
   result.data.allSimplecastEpisode.edges.forEach(({ node: {
     id,
-    title,
     season,
-    number
+    number,
+    slug
   }}) => createPage({
-    path: `/podcast/${_.kebabCase(title)}`,
+    path: `/podcast/${slug}/`,
     component: path.resolve('src/templates/episode.js'),
     context: {
       id,
