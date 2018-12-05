@@ -19,31 +19,79 @@ exports.sourceNodes = function sourceNodes({ boundActionCreators, getNodes, getN
     .map(node => append(node, {
       get slug() {
         return slugify(node.frontmatter.name)
-      },
-      posts: [],
-      episodes: []
-    }));
+      }
+    })).valueOf();
 
-  let peopleBySlug = people.valueOf().reduce((people, person) => ({
+  let peopleBySlug = people.reduce((people, person) => ({
     ...people,
     [person.slug]: person
   }), {});
 
   let posts = $markdownFiles
+    .filter(bySlugPredicate(/^\/blog/))
     .map(node => append(node, {
       get authors() {
-        return node.frontmatter.author.split(', '));
+        let post = this;
+        return node.frontmatter.author.split(', ')
+          .map(slugify)
+          .map(slug => {
+            let person = peopleBySlug[slug];
+            if (person) {
+              return person;
+            } else {
+              console.log(`Could not find person:${slug} to relate post: ${post.frontmatter.title}`);
+            }
+          }).filter(Boolean);
       }
     }))
-    .filter(bySlugPredicate(/^\/blog/));
+    .valueOf();
 
   let episodes = $nodes
+    .filter(node => node.internal.type === 'SimplecastEpisode')
     .map(node => append(node, {
       get authors() {
+        let episode = this;
         return node.author.split(', ')
+          .map(slugify)
+          .map(slug => {
+            let person = peopleBySlug[slug];
+            if (person) {
+              return person;
+            } else {
+              console.log(`Could not find person:${slug} to relate to episode: ${episode.title}`);
+            }
+          }).filter(Boolean);
       }
     }))
-    .filter(node => node.internal.type === 'SimplecastEpisode');
+    .valueOf();
 
-  console.log(markdownNodes);
+  people
+    .map(person => append(person, {
+      get posts() {
+        return posts.filter(post => post.authors.includes(person))
+      },
+      get episodes() {
+        return episodes.filter(episode => episode.authors.includes(person));
+      }
+    }))
+    .forEach(node => {
+      createNodeField({
+        node,
+        name: 'posts',
+        value: node.posts.map(post => post.id)
+      })
+      createNodeField({
+        node,
+        name: 'episodes',
+        value: node.episodes.map(episode => episode.id)
+      })
+    });
+
+  [...posts, ...episodes].forEach(node => {
+    createNodeField({
+      node,
+      name: 'authors',
+      value: node.authors.map(author => author.id)
+    });
+  });
 };
