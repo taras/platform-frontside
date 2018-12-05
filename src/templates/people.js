@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { graphql } from "gatsby";
+import { Link, graphql } from "gatsby";
 import Layout from "../components/Layout";
 import Helmet from "react-helmet";
 import Img from "gatsby-image"
@@ -18,12 +18,14 @@ const PersonPage = ({
         twitter,
         github,
         bio
+      },
+      fields: {
+        posts,
+        episodes
       }
     }
   }
 }) => {
-  // const { markdownRemark: post } = data
-
   return (
     <Layout>
       <Helmet title={`Team | ${title}`} />
@@ -32,9 +34,33 @@ const PersonPage = ({
       <div className="person-title">{personTitle}</div>
       <p>{bio}</p>
       <ul>
-        <li><a href={`https://twitter.com/${twitter}`}>{twitter}</a></li>
-        <li><a href={`https://github.com/${github}`}>{github}</a></li>
+        <li>Twitter: <a href={`https://twitter.com/${twitter}`}>{twitter}</a></li>
+        <li>GitHub: <a href={`https://github.com/${github}`}>{github}</a></li>
       </ul>
+      {posts.length ? (
+        <div>
+          <h2>Blog Posts</h2>
+          <ul>
+            {posts.map(post => (
+              <li key={post.fields.slug}>
+                <Link to={post.fields.slug}>
+                  {post.frontmatter.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ): null}
+      {episodes.length ? (
+        <div>
+          <h2>Podcast Episodes</h2>
+          <ul>
+            {episodes.map(episode => (
+              <li key={episode.number}>{episode.title}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </Layout>
   );
 };
@@ -72,6 +98,9 @@ export const peopleQuery = graphql`
         slug
         episodes {
           title
+          id
+          number
+          season
         }
         posts {
           frontmatter {
