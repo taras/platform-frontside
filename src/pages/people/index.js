@@ -31,8 +31,8 @@ const PeoplePage = ({
       <ul>
         {team.map(person => (
           <li key={person.frontmatter.name}>
-            <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
             <Link to={person.fields.slug}>
+              <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
               {person.frontmatter.name}
             </Link>
           </li>
@@ -42,8 +42,8 @@ const PeoplePage = ({
       <ul>
         {alumni.map(person => (
           <li key={person.frontmatter.name}>
-            <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
             <Link to={person.fields.slug}>
+              <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
               {person.frontmatter.name}
             </Link>
           </li>
