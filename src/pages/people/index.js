@@ -1,39 +1,56 @@
-import React from 'react'
-// import { kebabCase } from 'lodash'
-import Helmet from 'react-helmet'
-import { /* Link, */ graphql } from 'gatsby'
-import Layout from '../../components/Layout'
+import React from "react";
+import Helmet from "react-helmet";
+import { Link, graphql } from "gatsby";
+import Layout from "../../components/Layout";
 
 const PeoplePage = ({
-  data: { allMarkdownRemark: { group }, site: { siteMetadata: { title } } },
-}) => (
-  <Layout>
-    <section className="section">
-      <Helmet title={`People | ${title}`} />
-      <div className="container content">
-        <div className="columns">
-          <div
-            className="column is-10 is-offset-1"
-            style={{ marginBottom: '6rem' }}
-          >
-            <h1 className="title is-size-2 is-bold-light">People</h1>
-            <ul className="taglist">
-              {/* {group.map(tag => (
-                <li key={tag.fieldValue}>
-                  <Link to={`/people/${kebabCase(tag.fieldValue)}/`}>
-                    {tag.fieldValue} ({tag.totalCount})
-                  </Link>
-                </li>
-              ))} */}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  </Layout>
-)
+  data: {
+    allMarkdownRemark: { group },
+    site: {
+      siteMetadata: { title }
+    }
+  }
+}) => {
 
-export default PeoplePage
+  let alumni = group
+    .find(({ fieldValue }) => fieldValue === "true")
+    .edges
+    .map(({ node }) => node);
+
+  let team = group
+    .find(({ fieldValue }) => fieldValue === "undefined")
+    .edges
+    .map(({ node }) => node);
+
+
+  return (
+    <Layout>
+      <Helmet title={`Team | ${title}`} />
+      <h1>Team</h1>
+      <ul>
+        {team.map(person => (
+          <li key={person.frontmatter.name}>
+            <Link to={person.fields.slug}>
+              {person.frontmatter.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <h2>Alumni</h2>
+      <ul>
+        {alumni.map(person => (
+          <li key={person.frontmatter.name}>
+            <Link to={person.fields.slug}>
+              {person.frontmatter.name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Layout>
+  );
+};
+
+export default PeoplePage;
 
 export const peoplePageQuery = graphql`
   query PeopleListQuery {
@@ -42,5 +59,22 @@ export const peoplePageQuery = graphql`
         title
       }
     }
+    allMarkdownRemark(filter: { fileAbsolutePath: { regex: "/people/" } }) {
+      group(field: frontmatter___alumnus) {
+        fieldValue
+        edges {
+          node {
+            frontmatter {
+              name
+              title
+              img
+            }
+            fields {
+              slug
+            }
+          }
+        }
+      }
+    }
   }
-`
+`;
