@@ -1,4 +1,4 @@
-const { chain: $, append } = require('funcadelic');
+const { append } = require('funcadelic');
 const _slugify = require('slugify');
 
 const slugify = str => _slugify(str, {
@@ -10,24 +10,22 @@ const bySlugPredicate = regEx => node => node.fields.slug && regEx.test(node.fie
 exports.sourceNodes = function sourceNodes({ boundActionCreators, getNodes, getNode }) {
   const { createNodeField } = boundActionCreators;
 
-  let $nodes = $(getNodes());
+  let markdownFiles = getNodes().filter(node => node.internal.type === 'MarkdownRemark')
 
-  let $markdownFiles = $nodes.filter(node => node.internal.type === 'MarkdownRemark')
-
-  let people = $markdownFiles
+  let people = markdownFiles
     .filter(bySlugPredicate(/^\/people/))
     .map(node => append(node, {
       get slug() {
         return slugify(node.frontmatter.name)
       }
-    })).valueOf();
+    }));
 
   let peopleBySlug = people.reduce((people, person) => ({
     ...people,
     [person.slug]: person
   }), {});
 
-  let posts = $markdownFiles
+  let posts = markdownFiles
     .filter(bySlugPredicate(/^\/blog/))
     .map(node => append(node, {
       get authors() {
@@ -43,10 +41,9 @@ exports.sourceNodes = function sourceNodes({ boundActionCreators, getNodes, getN
             }
           }).filter(Boolean);
       }
-    }))
-    .valueOf();
+    }));
 
-  let episodes = $nodes
+  let episodes = getNodes()
     .filter(node => node.internal.type === 'SimplecastEpisode')
     .map(node => append(node, {
       get authors() {
@@ -62,8 +59,7 @@ exports.sourceNodes = function sourceNodes({ boundActionCreators, getNodes, getN
             }
           }).filter(Boolean);
       }
-    }))
-    .valueOf();
+    }));
 
   people
     .map(person => append(person, {
