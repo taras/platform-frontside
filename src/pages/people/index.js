@@ -2,6 +2,7 @@ import React from "react";
 import Helmet from "react-helmet";
 import { Link, graphql } from "gatsby";
 import Layout from "../../components/Layout";
+import Img from "gatsby-image"
 
 const PeoplePage = ({
   data: {
@@ -30,6 +31,7 @@ const PeoplePage = ({
       <ul>
         {team.map(person => (
           <li key={person.frontmatter.name}>
+            <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
             <Link to={person.fields.slug}>
               {person.frontmatter.name}
             </Link>
@@ -40,6 +42,7 @@ const PeoplePage = ({
       <ul>
         {alumni.map(person => (
           <li key={person.frontmatter.name}>
+            <Img fixed={person.frontmatter.img.childImageSharp.fixed} />
             <Link to={person.fields.slug}>
               {person.frontmatter.name}
             </Link>
@@ -67,7 +70,13 @@ export const peoplePageQuery = graphql`
             frontmatter {
               name
               title
-              img
+              img {
+                childImageSharp {
+                  fixed(width: 300) {
+                    ...GatsbyImageSharpFixed
+                  }
+                }
+              }
             }
             fields {
               slug

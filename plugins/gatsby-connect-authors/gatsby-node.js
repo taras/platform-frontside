@@ -7,8 +7,7 @@ const slugify = str => _slugify(str, {
 
 const bySlugPredicate = regEx => node => node.fields.slug && regEx.test(node.fields.slug)
 
-exports.sourceNodes = function sourceNodes({ boundActionCreators, getNodes, getNode }) {
-  const { createNodeField } = boundActionCreators;
+exports.sourceNodes = function sourceNodes({ actions: { createNodeField }, getNodes }) {
 
   let markdownFiles = getNodes().filter(node => node.internal.type === 'MarkdownRemark')
 

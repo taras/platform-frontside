@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { graphql } from "gatsby";
 import Layout from "../components/Layout";
 import Helmet from "react-helmet";
+import Img from "gatsby-image"
 
 const PersonPage = ({
   data: {
@@ -26,7 +27,7 @@ const PersonPage = ({
   return (
     <Layout>
       <Helmet title={`Team | ${title}`} />
-      <img src={img} alt={`${name}'s Portrait`} />
+      <Img fixed={img.childImageSharp.fixed} />
       <h1>{name}</h1>
       <div className="person-title">{personTitle}</div>
       <p>{bio}</p>
@@ -56,7 +57,13 @@ export const peopleQuery = graphql`
       frontmatter {
         name
         title
-        img
+        img {
+          childImageSharp {
+            fixed(width: 300) {
+              ...GatsbyImageSharpFixed
+            }
+          }
+        }
         twitter
         github
         bio
